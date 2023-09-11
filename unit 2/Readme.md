@@ -1733,8 +1733,6 @@ Here's a simple Java Swing program that demonstrates the creation of a toolbar w
 ```java
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class ToolbarExample {
     public static void main(String[] args) {
@@ -1745,18 +1743,20 @@ public class ToolbarExample {
         // Create a toolbar
         JToolBar toolbar = new JToolBar("Toolbar");
 
-        // Create toolbar buttons with icons
-        ImageIcon newIcon = new ImageIcon("new.png");
-        JButton newButton = new JButton(newIcon);
-        newButton.setToolTipText("New");
-        
-        ImageIcon openIcon = new ImageIcon("open.png");
-        JButton openButton = new JButton(openIcon);
-        openButton.setToolTipText("Open");
+        Dimension buttonSize = new Dimension(100, 80);  // Preferred button size
 
-        ImageIcon saveIcon = new ImageIcon("save.png");
-        JButton saveButton = new JButton(saveIcon);
+        // Create toolbar buttons
+        JButton newButton = new JButton("New");
+        newButton.setToolTipText("New");
+        newButton.setPreferredSize(buttonSize);
+
+        JButton openButton = new JButton("Open");
+        openButton.setToolTipText("Open");
+        openButton.setPreferredSize(buttonSize);
+
+        JButton saveButton = new JButton("Save");
         saveButton.setToolTipText("Save");
+        saveButton.setPreferredSize(buttonSize);
 
         // Add buttons to the toolbar
         toolbar.add(newButton);
