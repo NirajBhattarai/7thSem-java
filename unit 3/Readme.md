@@ -315,3 +315,268 @@ public class MouseListenerExample {
     }
 }
 ```
+
+# `WindowListener` in Swing
+
+Swing's `WindowListener` interface is designed to handle window state changes and lifecycle events. This listener provides methods to capture various window-related actions, such as opening, closing, activation, and deactivation.
+
+## Overview
+
+The `WindowListener` interface provides the following methods:
+
+1. `windowOpened(WindowEvent e)`: Invoked when a window is opened for the first time.
+2. `windowClosing(WindowEvent e)`: Triggered when a window is in the process of being closed (e.g., the close button is clicked).
+3. `windowClosed(WindowEvent e)`: Called after a window has been closed.
+4. `windowIconified(WindowEvent e)`: Triggered when a window is minimized.
+5. `windowDeiconified(WindowEvent e)`: Invoked when a window is restored from a minimized state.
+6. `windowActivated(WindowEvent e)`: Triggered when a window is set to be the active window.
+7. `windowDeactivated(WindowEvent e)`: Called when a window is no longer the active window.
+
+## Example Usage
+
+Here's an example demonstrating the use of the `WindowListener` with a `JFrame`:
+
+```java
+import javax.swing.JFrame;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+
+public class WindowListenerExample {
+
+    public static void main(String[] args) {
+        // Create a new JFrame
+        JFrame frame = new JFrame("WindowListener Example");
+        frame.setSize(300, 200);
+        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE); // Custom handling for window close
+
+        // Add WindowListener to JFrame
+        frame.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {
+                System.out.println("Window opened!");
+            }
+
+            @Override
+            public void windowClosing(WindowEvent e) {
+                System.out.println("Window is closing...");
+                frame.dispose();  // Close and dispose of the window
+            }
+
+            @Override
+            public void windowClosed(WindowEvent e) {
+                System.out.println("Window has closed.");
+            }
+
+            @Override
+            public void windowIconified(WindowEvent e) {
+                System.out.println("Window minimized.");
+            }
+
+            @Override
+            public void windowDeiconified(WindowEvent e) {
+                System.out.println("Window restored.");
+            }
+
+            @Override
+            public void windowActivated(WindowEvent e) {
+                System.out.println("Window activated!");
+            }
+
+            @Override
+            public void windowDeactivated(WindowEvent e) {
+                System.out.println("Window deactivated.");
+            }
+        });
+
+        frame.setVisible(true);
+    }
+}
+```
+
+# `AdjustmentListener` in Swing
+
+In Java's Swing toolkit, the `AdjustmentListener` interface is designated to manage adjustment events. These events are commonly triggered by components such as `JScrollBar` when the user modifies its value.
+
+## Overview
+
+The `AdjustmentListener` interface has a single method to deal with adjustment events:
+
+- `adjustmentValueChanged(AdjustmentEvent e)`: This method is invoked when the value of an adjustable component changes.
+
+## Example Usage
+
+Here's a hands-on example demonstrating the application of the `AdjustmentListener` with a `JScrollBar`:
+
+```java
+import javax.swing.JFrame;
+import javax.swing.JScrollBar;
+import javax.swing.JLabel;
+import java.awt.BorderLayout;
+import java.awt.event.AdjustmentEvent;
+import java.awt.event.AdjustmentListener;
+
+public class AdjustmentListenerExample {
+
+    public static void main(String[] args) {
+        // Create a new JFrame
+        JFrame frame = new JFrame("AdjustmentListener Example");
+        frame.setSize(300, 200);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        // Create a vertical JScrollBar
+        JScrollBar scrollBar = new JScrollBar(JScrollBar.VERTICAL);
+        JLabel label = new JLabel("Value: 0");
+
+        // Add AdjustmentListener to JScrollBar
+        scrollBar.addAdjustmentListener(new AdjustmentListener() {
+            @Override
+            public void adjustmentValueChanged(AdjustmentEvent e) {
+                int value = e.getValue();
+                label.setText("Value: " + value);
+            }
+        });
+
+        frame.add(scrollBar, BorderLayout.EAST);
+        frame.add(label, BorderLayout.CENTER);
+
+        frame.setVisible(true);
+    }
+}
+```
+
+# `ContainerListener` in Swing
+
+In the Swing framework, the `ContainerListener` interface provides methods to listen for and respond to events related to the addition or removal of components from a container, like a `JPanel` or `JFrame`.
+
+## Overview
+
+The `ContainerListener` interface comes with two primary methods:
+
+1. `componentAdded(ContainerEvent e)`: Called when a component is added to the container.
+2. `componentRemoved(ContainerEvent e)`: Invoked when a component is removed from the container.
+
+## Example Usage
+
+Below is an example showcasing the use of the `ContainerListener` with a `JFrame` and a couple of buttons:
+
+```java
+import javax.swing.JFrame;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ContainerEvent;
+import java.awt.event.ContainerListener;
+
+public class ContainerListenerExample {
+
+    public static void main(String[] args) {
+        // Create a new JFrame
+        JFrame frame = new JFrame("ContainerListener Example");
+        frame.setSize(300, 200);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        // JPanel as container
+        JPanel panel = new JPanel();
+        
+        // Buttons for adding and removing a sample component
+        JButton addButton = new JButton("Add Component");
+        JButton removeButton = new JButton("Remove Component");
+
+        JLabel label = new JLabel("Sample Component");
+        
+        addButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                panel.add(label);
+                panel.revalidate();
+                panel.repaint();
+            }
+        });
+
+        removeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                panel.remove(label);
+                panel.revalidate();
+                panel.repaint();
+            }
+        });
+
+        // Add ContainerListener to JPanel
+        panel.addContainerListener(new ContainerListener() {
+            @Override
+            public void componentAdded(ContainerEvent e) {
+                System.out.println("Component added to the container!");
+            }
+
+            @Override
+            public void componentRemoved(ContainerEvent e) {
+                System.out.println("Component removed from the container!");
+            }
+        });
+
+        panel.add(addButton);
+        panel.add(removeButton);
+        frame.add(panel);
+
+        frame.setVisible(true);
+    }
+}
+```
+
+# `MouseMotionListener` in Swing
+
+The `MouseMotionListener` interface in Java's Swing framework is responsible for monitoring mouse movements within a component. Unlike the `MouseListener` which focuses on click-based events, the `MouseMotionListener` captures actions like dragging and moving.
+
+## Overview
+
+The `MouseMotionListener` interface comprises two core methods:
+
+1. `mouseDragged(MouseEvent e)`: Invoked when a mouse button is pressed and the cursor is dragged.
+2. `mouseMoved(MouseEvent e)`: Called when the mouse cursor is moved within a component but no buttons are pressed.
+
+## Example Usage
+
+Here's an example illustrating the use of the `MouseMotionListener` with a `JPanel`:
+
+```java
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import java.awt.Color;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
+
+public class MouseMotionListenerExample {
+
+    public static void main(String[] args) {
+        // Create a new JFrame
+        JFrame frame = new JFrame("MouseMotionListener Example");
+        frame.setSize(300, 200);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLayout(null);
+
+        // Create a JPanel
+        JPanel panel = new JPanel();
+        panel.setBounds(50, 50, 200, 100);
+        panel.setBackground(Color.LIGHT_GRAY);
+
+        // Add MouseMotionListener to JPanel
+        panel.addMouseMotionListener(new MouseMotionListener() {
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                System.out.println("Mouse dragged at: " + e.getX() + ", " + e.getY());
+            }
+
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                System.out.println("Mouse moved at: " + e.getX() + ", " + e.getY());
+            }
+        });
+
+        // Add panel to the JFrame
+        frame.add(panel);
+        frame.setVisible(true);
+    }
+}
+```
