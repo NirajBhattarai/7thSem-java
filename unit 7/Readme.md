@@ -114,3 +114,367 @@ public class MyServlet extends HttpServlet {
 3. Select your server (e.g., Tomcat) and click Finish.
 4. Eclipse will start the server and open a browser or browser tab.
 5. Navigate to http://localhost:8080/ServletDemo/hello.
+
+
+## Generic Servlet README
+`GenericServlet` is an abstract class that provides an implementation for the `Servlet` interface. Unlike the more commonly used HttpServlet which is specific to HTTP protocols, GenericServlet can be used for any type of protocol. It provides life-cycle methods like `init()`, `service()`, and `destroy()` which you can override to define behavior during these life-cycle events.
+
+### Advantages:
+1. `Protocol independent`: Can be used when the servlet doesn't need to handle HTTP-specific tasks.
+2. `Versatile`: Suitable for various protocols other than HTTP.
+### Disadvantages:
+1. `Lacks HTTP-specific methods`: Doesn't offer the convenience methods of HttpServlet like doGet(), doPost(), etc.
+2. `Less common`: Not as frequently used as HttpServlet for web applications.
+
+```
+import java.io.*;
+import javax.servlet.*;
+import javax.servlet.annotation.WebServlet;
+
+@WebServlet("/genericServlet")
+public class ExampleGenericServlet extends GenericServlet {
+    
+    @Override
+    public void init() throws ServletException {
+        // Initialization code here
+    }
+
+    @Override
+    public void service(ServletRequest request, ServletResponse response) 
+      throws ServletException, IOException {
+        
+        response.setContentType("text/html");
+        PrintWriter out = response.getWriter();
+        
+        out.println("<html>");
+        out.println("<head><title>Generic Servlet Example</title></head>");
+        out.println("<body>");
+        out.println("<h2>Welcome to the Generic Servlet Example</h2>");
+        out.println("</body>");
+        out.println("</html>");
+    }
+
+    @Override
+    public void destroy() {
+        // Cleanup resources, if needed.
+    }
+}
+
+```
+
+### web.xml
+
+```
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
+                             http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+         version="3.1">
+
+    <servlet>
+        <servlet-name>ExampleGenericServlet</servlet-name>
+        <servlet-class>path.to.your.ExampleGenericServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>ExampleGenericServlet</servlet-name>
+        <url-pattern>/genericServlet</url-pattern>
+    </servlet-mapping>
+
+</web-app>
+
+```
+
+```
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+public class UserController extends HttpServlet {
+
+	private static final long serialVersionUID = 1L;
+	private List<Student> students = new ArrayList<>();
+
+	{
+		students.add(new Student(1, "Alice", 20));
+		students.add(new Student(2, "Bob", 21));
+		students.add(new Student(3, "Charlie", 22));
+	}
+
+	@Override
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+		resp.setContentType("text/html");
+		PrintWriter out = resp.getWriter();
+//	        resp.setContentType("application/json");
+//	        PrintWriter out = resp.getWriter();
+//	        
+//	        StringBuilder json = new StringBuilder("[");
+//	        for (int i = 0; i < students.length; i++) {
+//	            Student student = students[i];
+//	            json.append("{")
+//	                .append("\"id\":").append(student.getId()).append(",")
+//	                .append("\"name\":\"").append(student.getName()).append("\",")
+//	                .append("\"age\":").append(student.getAge())
+//	                .append("}");
+//	            
+//	            if (i < students.length - 1) {
+//	                json.append(",");
+//	            }
+//	        }
+//	        json.append("]");
+//	        
+//	        out.print(json.toString());
+//	        out.flush();
+	}
+
+	@Override
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		resp.setContentType("application/json");
+//
+//	        Student student = gson.fromJson(req.getReader(), Student.class); // Parses the incoming JSON to a Student object
+//	        students.add(student);
+
+		resp.getWriter().write("success"); // Sends a success response back
+	}
+
+	@Override
+	protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		resp.setContentType("application/json");
+		resp.getWriter().write("success"); // Sends a success response back
+
+	}
+
+}
+
+```
+
+### HttpSession in Servlet
+**Introduction:**
+
+`HttpSession` is an integral part of Java's Servlet API, providing a way to identify a user across multiple page requests or visitations. It primarily helps in maintaining the user's session and can store data about the user.
+
+**Features:**
+
+1. `Persistence`: HttpSession persists data between requests in a web application.
+
+2. `Timeout`: Sessions can be configured to expire after a certain period of inactivity.
+
+3. `Platform-independent`: Since it's part of the Java Servlet API, it can run on any servlet container.
+
+4. `Security`: Data stored in an HttpSession is server-side and is not exposed directly to the client.
+
+```
+import java.io.IOException;
+import java.io.PrintWriter;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+@WebServlet("/SessionExample")
+public class SessionExample extends HttpServlet {
+
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("text/html");
+        PrintWriter out = response.getWriter();
+        
+        // Retrieve or create HttpSession
+        HttpSession session = request.getSession(true);
+
+        // Check if there's a counter in this session
+        Integer count = (Integer) session.getAttribute("count");
+
+        if (count == null) {
+            count = 1;  // initialize the session counter
+        } else {
+            count++;  // increment the session counter
+        }
+
+        // Update the session with the new counter value
+        session.setAttribute("count", count);
+
+        out.println("<html>");
+        out.println("<body>");
+        out.println("<h1>Session Counter: " + count + "</h1>");
+        out.println("</body>");
+        out.println("</html>");
+
+        out.close();
+    }
+}
+
+```
+ 
+## Cookies in Servlet
+
+### Introduction:
+
+`Cookies` are small pieces of data that servers send to the user's web browser, allowing the server to remember information about the user's session. In Java Servlets, the `javax.servlet.http.Cookie` class provides methods for setting and retrieving cookie data.
+
+### Features:
+1. `State Management`: Cookies allow web applications to manage user state across requests without requiring server-side session management.
+
+2. `Persistence`: Some cookies can persist across browser sessions, allowing for longer-term data storage.
+
+3. `Limited Size`: Each cookie can store up to 4KB of data. If you need to store more, consider using multiple cookies or alternative methods.
+
+4. `Security`: Cookies can be marked as secure and HttpOnly, increasing their security against potential attacks.
+
+### Types of Servlet
+
+1. URL Rewriting
+2. HTML Hidden Field
+3. Session Management API
+
+
+### URL Rewriting
+
+URL rewriting is a technique used to maintain the state of an object between client requests when cookies are disabled. In URL rewriting, the session state is embedded within the URL path of the next request.
+
+
+```
+import java.io.IOException;
+import java.io.PrintWriter;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+public class URLRewritingExample extends HttpServlet {
+
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("text/html");
+        PrintWriter out = response.getWriter();
+
+        // Simulate generating a unique session ID
+        String sessionId = "123456";
+
+        out.println("<html>");
+        out.println("<body>");
+
+        // Check for existing session ID in the request
+        String existingSessionId = request.getParameter("sessionId");
+        if (existingSessionId != null) {
+            out.println("<h1>Existing Session ID: " + existingSessionId + "</h1>");
+        } else {
+            out.println("<h1>No Session ID found. Assigning new ID.</h1>");
+        }
+
+        out.println("<h2>Click the link below:</h2>");
+        // Embedding the session ID into the URL for the next request
+        out.println("<a href='" + response.encodeURL("URLRewritingExample?sessionId=" + sessionId) + "'>Click Here</a>");
+
+        out.println("</body>");
+        out.println("</html>");
+
+        out.close();
+    }
+}
+
+
+```
+
+```
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+public class Testing extends HttpServlet {
+
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("text/html");
+        PrintWriter out = response.getWriter();
+
+        // Simulate generating a unique session ID
+        String sessionId = "123456";
+
+        out.println("<html>");
+        out.println("<body>");
+
+        // Check for existing session ID in the request
+        String existingSessionId = request.getParameter("sessionId");
+        if (existingSessionId != null) {
+            out.println("<h1>Testing Existing Session ID: " + existingSessionId + "</h1>");
+        } else {
+            out.println("<h1>Testing No Session ID found. Assigning new ID.</h1>");
+        }
+
+        out.println("<h2>Click the link below:</h2>");
+        // Embedding the session ID into the URL for the next request
+        out.println("<a href='" + response.encodeURL("users?sessionId=" + sessionId) + "'>Click Here</a>");
+
+        out.println("</body>");
+        out.println("</html>");
+
+        out.close();
+    }
+}
+
+```
+
+### HTML Hidden Field in Servlets
+Hidden fields in HTML forms allow developers to send additional data back to the server without displaying it on the web page. These fields can be useful for maintaining state between client requests, especially when session tracking is needed.
+
+
+```
+import java.io.IOException;
+import java.io.PrintWriter;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+public class HiddenFieldExample extends HttpServlet {
+
+    private static final long serialVersionUID = 1L;
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("text/html");
+        PrintWriter out = response.getWriter();
+
+        // Retrieve the hidden field value
+        String hiddenValue = request.getParameter("hiddenData");
+        
+        out.println("<html>");
+        out.println("<body>");
+        out.println("<h1>Hidden Field Example</h1>");
+
+        if (hiddenValue != null) {
+            out.println("<h2>Retrieved Hidden Value: " + hiddenValue + "</h2>");
+        } else {
+            out.println("<h2>No Hidden Value found.</h2>");
+        }
+
+        out.println("<form action='test' method='get'>");
+        // Setting a hidden field with a value
+        out.println("<input type='hidden' name='hiddenData' value='ThisIsHiddenValue'>");
+        out.println("<input type='submit' value='Submit Form'>");
+        out.println("</form>");
+
+        out.println("</body>");
+        out.println("</html>");
+        out.close();
+    }
+}
+
+
+```
