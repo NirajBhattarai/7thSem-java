@@ -698,3 +698,455 @@ You can package your web application into a .war file using the following comman
 Copy code
 jar -cvf MyWebApp.war *
 Remember to execute this command from the directory containing your web application's content.
+
+
+# JSP Scripting Element
+
+JSP Scripting elements are written inside `<% %>` tags. The code inside `<% %>` tags is processed by the JSP engine during the translation of the JSP page. Any other text in the JSP page is considered as HTML code or plain text.
+
+**Example:**
+```html
+<html>
+    <head>
+        <title>My First JSP Page</title>
+    </head>
+    <%
+       int count = 0;
+    %>
+    <body>
+        Page Count is <% out.println(++count); %>   
+    </body>
+</html>
+```
+
+# JSP Scripting Elements
+
+| Type          | Syntax          | Description  | Example |
+|---------------|-----------------|--------------|---------|
+| Scriptlet     | `<% code %>`    | Contains Java code that's executed during the request phase. | `<% int x = 10; %>` |
+| Expression    | `<%= code %>`   | Contains expressions that are evaluated and the result is inserted into the output. | `<%= x+5 %>` |
+| Declaration   | `<%! code %>`   | Declares variables or methods with a scope of the entire JSP. | `<%! int y = 20; %>` |
+| Directive     | `<%@ ... %>`    | Provides directions/instructions for the JSP engine. Can be used to include other files, specify error pages, or import Java packages. | `<%@ page language="Java" contentType="text/html" %>` |
+| Action        | `<jsp: ... />`  | XML-styled tags that represent predefined JSP actions. They are used to control the behavior of the JSP engine. | `<jsp:include page="header.jsp" />` |
+| Comment       | `<%-- ... --%>` | Defines a comment; contents will not be processed by the JSP engine. | `<%-- This is a JSP comment --%>` |
+
+
+
+# JSP Comment Example
+
+JSP allows developers to include comments in their code, which are not processed during page translation and execution. This can be useful for documentation or to temporarily disable a portion of code without removing it. JSP comments are different from HTML comments; they are not visible in the final rendered output.
+
+```
+<html>
+    <head>
+        <title>JSP Comment Example</title>
+    </head>
+    <body>
+        <%-- This is a comment in JSP and it won't be displayed in the final output. --%>
+        <% int data = 50; %>
+        Data value is: <%= data %>
+        <%-- Incrementing the value of data variable --%>
+        <%
+            data++;
+        %>
+        After increment, data value is: <%= data %>
+    </body>
+</html>
+```
+
+
+# JSP Directive Example
+
+JSP directives provide instructions to the JSP container, affecting the overall structure of the generated servlet. Directives can define attributes that provide information about the entire JSP page, import packages, specify error handling pages, or include other files for modularization. There are three main types of directives in JSP: `page`, `include`, and `taglib`.
+
+Here is a sample JSP program that demonstrates the use of various directives:
+
+```
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page import="java.util.Date" %>
+<%@ include file="header.jsp" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
+<html>
+    <head>
+        <title>JSP Directive Example</title>
+    </head>
+    <body>
+        Current Date and Time: <%= new Date() %><br>
+        
+        <c:choose>
+            <c:when test="${5 > 3}">
+                The number 5 is greater than 3.
+            </c:when>
+            <c:otherwise>
+                The number 5 is not greater than 3.
+            </c:otherwise>
+        </c:choose>
+    </body>
+</html>
+
+<%@ include file="footer.jsp" %>
+
+```
+
+`header.jsp`
+
+```
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+ <p>Here is Jsp Header</p>
+</body>
+</html>
+
+```
+`footer.jsp`
+
+```
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+ <p>Here is Footer Header</p>
+</body>
+</html>
+```
+
+# JSP Scriptlet Example
+
+JSP scriptlets allow you to embed Java code directly within the JSP page. The code inside a scriptlet is executed as part of the servlet's `service` method (more specifically, within the `_jspService` method) when the JSP is requested. The code within a scriptlet is written inside the `<% ... %>` delimiters.
+
+## Example:
+
+Here's a sample JSP page that uses scriptlets to perform a simple calculation:
+
+```jsp
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<html>
+    <head>
+        <title>JSP Scriptlet Example</title>
+    </head>
+    <body>
+
+        <% 
+            int a = 5;
+            int b = 3;
+            int sum = a + b;
+        %>
+
+        Sum of <%= a %> and <%= b %> is: <%= sum %>
+
+    </body>
+</html>
+```
+
+
+# JSP Expression Example
+
+In JSP, an expression is used to evaluate a single Java expression and insert its value directly into the output. An expression is written between the `<%= ... %>` delimiters. Unlike scriptlets, expressions don't require a semicolon (`;`) at the end, and they can't contain multiple lines of code or statements—only single expressions that return a value.
+
+## Example:
+
+Here's a sample JSP page that demonstrates the use of JSP expressions:
+
+```
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<html>
+    <head>
+        <title>JSP Expression Example</title>
+    </head>
+    <body>
+
+        <% int yearOfBirth = 1990; %>
+        
+        You are <%= 2023 - yearOfBirth %> years old in 2023.
+
+    </body>
+</html>
+
+```
+
+# JSP Declaration Example
+
+In JSP, a declaration is used to declare variables or methods at the class level of the generated servlet. A declaration is written between the `<%! ... %>` delimiters. Unlike scriptlets and expressions, declarations are not executed during the request-response cycle but instead are used to declare members (variables or methods) that can be later used within the JSP.
+
+## Example:
+
+Here's a sample JSP page that demonstrates the use of JSP declarations:
+
+```jsp
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<html>
+    <head>
+        <title>JSP Declaration Example</title>
+    </head>
+    <body>
+
+        <%! int counter = 0; %>
+
+        <%! 
+            public int incrementCounter() {
+                return ++counter;
+            }
+        %>
+        
+        Current count: <%= incrementCounter() %>
+
+    </body>
+</html>
+```
+
+
+# JSP Implicit Objects
+
+In JSP, there are several predefined objects that you don't need to create explicitly; they are created internally by the JSP container. These objects are known as implicit objects. They are created during the translation phase of JSP to servlet conversion and are available to all JSP pages.
+
+Here are the main JSP implicit objects:
+
+| Object       | Class                                      | Description                                               |
+|--------------|--------------------------------------------|-----------------------------------------------------------|
+| `request`    | `javax.servlet.http.HttpServletRequest`       | Represents the client's request to the server.            |
+| `response`   | `javax.servlet.http.HttpServletResponse`      | Represents the server's response to the client.           |
+| `out`        | `javax.servlet.jsp.JspWriter`               | Provides methods to write content to the client.          |
+| `session`    | `javax.servlet.http.HttpSession`            | Represents the client's session with the server.          |
+| `application`| `javax.servlet.ServletContext`               | Represents the context of the web application.            |
+| `config`     | `javax.servlet.ServletConfig`                | Represents the configuration of the servlet or JSP.       |
+| `pageContext`| `javax.servlet.jsp.PageContext`              | Provides access to various objects including other implicit objects.|
+| `page`       | `java.lang.Object`                          | Represents the instance of the translated servlet class.  |
+| `exception`  | `java.lang.Throwable`                       | Represents exceptions that can be caught and handled in the JSP. |
+
+## Example:
+
+Here's a sample JSP snippet that demonstrates the use of some implicit objects:
+
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isErrorPage="true" %>
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>JSP Implicit Objects Demonstration</title>
+    </head>
+    <body>
+
+        <!-- request object -->
+        Requested URL: <%= request.getRequestURL() %><br/>
+        
+        <!-- response object (let's set a header for demonstration, though this isn't usually displayed) -->
+        <%
+            response.setHeader("demoHeader", "demoValue");
+        %>
+        
+        <!-- out object -->
+        <% out.println("This is printed using the out object."); %><br/>
+
+        <!-- session object -->
+        Current Session ID: <%= session.getId() %><br/>
+        <%
+            session.setAttribute("demoAttribute", "demoValue");
+        %>
+        Session Attribute (demoAttribute): <%= session.getAttribute("demoAttribute") %><br/>
+
+        <!-- application object -->
+        Application Real Path: <%= application.getRealPath("/") %><br/>
+
+        <!-- config object -->
+        Servlet Name (from config): <%= config.getServletName() %><br/>
+
+        <!-- pageContext object -->
+        Servlet Context Path (using pageContext): <%= pageContext.getServletContext().getContextPath() %><br/>
+
+        <!-- page object (typically not used directly, but for demonstration) -->
+        This JSP page's class name: <%= page.getClass().getName() %><br/>
+
+        <!-- exception object (used in error pages) -->
+        <% 
+            if (exception != null) {
+        %>
+        Exception Message: <%= exception.getMessage() %><br/>
+        <%
+            }
+        %>
+
+    </body>
+</html>
+
+
+
+# Object Scope in JSP
+
+In JSP, the scope of an object determines its lifetime and visibility from various parts of the application. There are four primary scopes available for objects in JSP. Let's explore them with examples:
+
+## **1. Page Scope**
+
+### Description:
+- **Duration**: Exists only for the current request.
+- **Visibility**: Only accessible within the JSP page where it's created.
+- **Usage**: Objects in this scope are automatically destroyed when the response is sent back to the client.
+
+### Example:
+```jsp
+<%-- This is a JSP page --%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Page Scope Example</title>
+</head>
+<body>
+    <% pageContext.setAttribute("pageAttribute", "Page Scope Value"); %>
+    Page Attribute: <%= pageContext.getAttribute("pageAttribute") %>
+</body>
+</html>
+```
+
+
+## Request Scope in JSP
+
+### **Description**:
+The `request` scope in JSP is specific to the lifetime of a single client's request. Any attribute stored in this scope is accessible from any JSP or servlet that processes the same request, making it useful for sharing data between resources (like forwarding data between servlets and JSPs). Once the request processing is complete, the objects in this scope are discarded.
+
+### **Characteristics**:
+- **Duration**: Lasts for a single client's request, including any forwarded or included JSPs/servlets.
+- **Visibility**: Any JSP or servlet that processes the same request can access it.
+- **Usage**: Useful for sharing data across resources during the lifetime of a single request. Attributes stored here are destroyed after processing the request.
+
+### **Example**:
+
+```jsp
+<%-- This is a JSP page demonstrating request scope --%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Request Scope Example</title>
+</head>
+<body>
+    <% request.setAttribute("requestAttribute", "Request Scope Value"); %>
+    Request Attribute: <%= request.getAttribute("requestAttribute") %>
+</body>
+</html>
+```
+
+## Session Scope in JSP
+
+### **Description**:
+The `session` scope in JSP pertains to a specific user's session across multiple requests to the server. When you store an attribute in the session scope, it remains available and persists across multiple requests from the same client, until the session expires or the attribute is explicitly removed.
+
+### **Characteristics**:
+- **Duration**: Lasts across multiple requests until the user's session times out or is invalidated.
+- **Visibility**: Any JSP or servlet within the same session can access it.
+- **Usage**: Useful for storing user-specific information like user credentials, user preferences, or a user's shopping cart.
+
+### **Example**:
+
+```jsp
+<%-- This is a JSP page demonstrating session scope --%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Session Scope Example</title>
+</head>
+<body>
+    <% 
+       if(session.getAttribute("sessionAttribute") == null) {
+           session.setAttribute("sessionAttribute", "Initial Session Value"); 
+       }
+    %>
+    Session Attribute: <%= session.getAttribute("sessionAttribute") %>
+    <br/>
+    <a href="modifySessionAttribute.jsp">Modify Session Attribute</a>
+</body>
+</html>
+```
+
+## Application Scope in JSP
+
+### **Description**:
+The `application` scope in JSP corresponds to the entire lifetime of the web application. Any attribute stored in this scope remains available and persists for as long as the web application is running, making it accessible from any JSP or servlet that is part of the application. It's useful for storing data that should be shared across all users and all requests.
+
+### **Characteristics**:
+- **Duration**: Lasts for the entire lifetime of the web application, until the application is stopped or the attribute is explicitly removed.
+- **Visibility**: Any JSP or servlet within the same web application can access it.
+- **Usage**: Ideal for storing global configuration, shared resources, or data that is common to all users and requests.
+
+### **Example**:
+
+```jsp
+<%-- This is a JSP page demonstrating application scope --%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Application Scope Example</title>
+</head>
+<body>
+    <% 
+       if(application.getAttribute("globalCount") == null) {
+           application.setAttribute("globalCount", 0); 
+       }
+       int count = (Integer)application.getAttribute("globalCount");
+       application.setAttribute("globalCount", count + 1);
+    %>
+    Global Request Count: <%= application.getAttribute("globalCount") %>
+    <br/>
+    <p>This count will increment for every request from any user to this JSP, illustrating the global nature of the application scope.</p>
+</body>
+</html>
+```
+
+## Processing Forms in JSP
+
+Using JSP, you can create web forms and also handle their submissions. Here's a step-by-step guide.
+
+### **1. Creating a Form in JSP**:
+
+You can design a simple form that collects user information, such as a name and email.
+
+```jsp
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Form Submission in JSP</title>
+</head>
+<body>
+    <form action="processForm.jsp" method="post">
+        Name: <input type="text" name="userName"><br>
+        Email: <input type="text" name="userEmail"><br>
+        <input type="submit" value="Submit">
+    </form>
+</body>
+</html>
+```
+
+
+### **2. Processing the Form**:
+
+After submission, data is sent to processForm.jsp, where it is processed.
+
+```jsp
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Form Data Processed</title>
+</head>
+<body>
+    Welcome, <%= request.getParameter("userName") %>!
+    <br>
+    Your email is: <%= request.getParameter("userEmail") %>
+</body>
+</html>
+```
