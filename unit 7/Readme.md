@@ -592,3 +592,109 @@ public class SendRedirect extends HttpServlet {
 
 
 ```
+### JSP: Java Server Pages
+Sun Microsystems introduced **JSP** as an alternative to **Servlets**.
+
+### JSP vs. Servlets
+
+- JSPs are used to develop server-side (or web-based) applications, similar to Servlets.
+- Servlets require more steps and time for simple tasks, like displaying a welcome message, while JSPs can be quicker.
+
+#### Advantages of JSP
+
+- JSPs offer better productivity than Servlets.
+- With careful design, there's no need to provide Java code in JSPs.
+
+  > **Note:** You can eliminate Java code using JSP action tags, custom tags, or JSTL.
+
+- JSPs allow for separation of business logic and presentation logic.
+- JSP technology inherits properties from **ASP (Active Server Pages)**.
+
+### Procedure to Develop a Simple JSP Program
+
+1. JSP programs should have the ".jsp" extension.
+2. Place JSPs inside the project folder but outside the `WEB-INF` folder.
+
+#### First Request to the Server:
+
+1. Server invokes the JSP compiler.
+  
+  > **Note:** Every server vendor provides their own JSP compiler.
+
+2. The JSP compiler translates the `.jsp` program into a Servlet.
+3. The Servlet is then compiled.
+4. The server creates an object for the compiled Servlet.
+
+  > **Note:** This process happens only once, during the first client request.
+
+#### Second Request to the Server:
+The server executes the existing Servlet object.
+
+
+## Lifecycle of JSP
+
+
+![JSP Lifecycle](https://www.masterincoding.com/wp-content/uploads/2020/04/jsp-life-cycle.png)
+
+- **Translation**
+- **Compilation**
+- **Loading**
+- **Instantiation**
+- **Initialization**
+- **Request Processing**
+- **Destruction**
+
+A JSP page is converted into a Servlet to service requests. This process, known as the *Lifecycle of JSP*, includes the following steps:
+
+1. **Translation** of JSP to Servlet code.
+2. **Compilation** of Servlet to bytecode.
+3. **Loading** of the Servlet class.
+4. **Instantiation** of the Servlet.
+5. **Initialization** by calling the `jspInit()` method.
+6. **Request Processing** by calling the `_jspService()` method.
+7. **Destruction** by calling the `jspDestroy()` method.
+
+## Steps to Visualize the LifeCycle
+1. Configure User Access in Tomcat
+Navigate to the tomcat-users.xml file located within the tomcat/conf directory. Add the following roles and user:
+
+```
+<role rolename="manager-gui" />
+<role rolename="admin-gui" />
+<user username="myadmin" password="mypassword" roles="manager-gui,admin-gui" />
+```
+
+2. Restart Tomcat
+If you have Tomcat running (e.g., from Eclipse), ensure to stop it first.
+
+3. Start Tomcat from the Bin Directory
+Navigate to the bin folder within your Tomcat directory and execute:
+
+
+```
+./startup.sh
+
+```
+This command will start the Tomcat server.
+
+4. Access the Tomcat Web Interface
+Open a browser and visit:
+```
+http://localhost:8080
+```
+
+You should be able to log in using the credentials you configured:
+
+```
+Username: myadmin
+Password: mypassword
+
+```
+After logging in, navigate to the applications section. This is where you can deploy your applications.
+
+5. Generating a WAR File for Your Web App
+You can package your web application into a .war file using the following command:
+
+Copy code
+jar -cvf MyWebApp.war *
+Remember to execute this command from the directory containing your web application's content.
