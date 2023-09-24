@@ -62,6 +62,7 @@ public class HelloImpl extends UnicastRemoteObject implements Hello {
         return "Hello, world!";
     }
 }
+```
 
 
 ### 3. Implement the Server
@@ -115,3 +116,38 @@ public class HelloClient {
     }
 }
 ```
+
+## Compilation & Execution
+
+
+### Execution Steps
+
+1. **Compile all the Java files:**:
+   Navigate to the directory containing your Java files (Hello.java, HelloImpl.java, HelloServer.java, and HelloClient.java) and compile them using:
+   ```bash
+   javac -source 11 -target 11 *.java
+   ```
+
+
+2. **Generate the Stub files:**:
+   Use the rmic tool to generate stubs for your remote object implementation::
+   ```bash
+   rmic HelloImpl
+   ```
+
+3. **Start the RMI Registry**:
+   After compiling the Java files, navigate to the directory containing the compiled `.class` files. Start the RMI registry either in the background or in a new terminal window:
+   ```bash
+   rmiregistry &
+   ```
+
+4. **Start the Server:**:
+   In the original terminal, start the server application:
+   ```bash
+   java HelloServer
+   ```
+5. **Run the Client:**:
+   Once the server is running and the remote object is registered, you can start the client in a separate terminal:
+   ```bash
+   java HelloClient
+   ```            
