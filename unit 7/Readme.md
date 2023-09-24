@@ -478,3 +478,117 @@ public class HiddenFieldExample extends HttpServlet {
 
 
 ```
+
+### RequestDispatcher
+
+## Introduction
+`RequestDispatcher` is an interface provided by the Servlet API to handle server-side include and forward requests. One of the primary use-cases is forwarding the request from one servlet to another, without the client being aware of the change in URL.
+
+```
+package requestdispatcherexample;
+
+import java.io.IOException;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+public class DispatcherServlet extends HttpServlet {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // Forward request to the target servlet
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/target");
+        dispatcher.forward(request, response);
+        
+    }
+}
+
+
+```
+
+```
+
+package requestdispatcherexample;
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+public class TargetServlet extends HttpServlet {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        PrintWriter out = response.getWriter();
+        out.println("<h1>You've reached the target servlet!</h1>");
+    }
+}
+
+
+```
+
+
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+	id="WebApp_ID" version="3.1">
+	<display-name>requestdispatcherexample</display-name>
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+		<welcome-file>index.jsp</welcome-file>
+		<welcome-file>index.htm</welcome-file>
+		<welcome-file>default.html</welcome-file>
+		<welcome-file>default.jsp</welcome-file>
+		<welcome-file>default.htm</welcome-file>
+	</welcome-file-list>
+	
+	
+	
+	<servlet>
+		<servlet-name>first</servlet-name>
+		<servlet-class>requestdispatcherexample.DispatcherServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>first</servlet-name>
+		<url-pattern>/first</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>target</servlet-name>
+		<servlet-class>requestdispatcherexample.TargetServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>target</servlet-name>
+		<url-pattern>/target</url-pattern>
+	</servlet-mapping>
+
+
+</web-app>
+
+```
+
+## Send Redirect
+
+```
+
+package requestdispatcherexample;
+
+import java.io.IOException;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+public class SendRedirect extends HttpServlet {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.sendRedirect("https://www.google.com/");
+        
+    }
+}
+
+
+```
