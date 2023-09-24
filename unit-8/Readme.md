@@ -29,6 +29,41 @@ public interface Hello extends Remote {
 }
 ```
 
+### 2. Implement the Remote Interface
+
+After defining the remote interface, the next step is to provide an implementation for it. This class, often referred to as the "remote object," will perform the actual operations when a remote method is invoked.
+
+#### Steps to Implement the Remote Interface:
+
+1. **Extend `UnicastRemoteObject`**: The implementation class should extend the `java.rmi.server.UnicastRemoteObject` class. This is required to create and export a remote object.
+
+2. **Implement the Remote Interface**: Declare that your class implements the previously defined remote interface.
+
+3. **Provide a Constructor**: The constructor of this class should handle the potential `RemoteException` that might be thrown. This is often done by simply calling the superclass constructor using `super()`.
+
+4. **Implement the Remote Methods**: Provide concrete implementations for all the methods declared in the remote interface.
+
+Here's a sample implementation based on the `Hello` interface:
+
+```java
+import java.rmi.server.UnicastRemoteObject;
+import java.rmi.RemoteException;
+
+public class HelloImpl extends UnicastRemoteObject implements Hello {
+    
+    // Constructor
+    public HelloImpl() throws RemoteException {
+        super();
+    }
+
+    // Implement the remote method
+    @Override
+    public String sayHello() throws RemoteException {
+        return "Hello, world!";
+    }
+}
+
+
 ### 3. Implement the Server
 
 After implementing the remote interface, you need to set up the server that will host and provide the RMI service. 
