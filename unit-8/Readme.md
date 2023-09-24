@@ -151,3 +151,79 @@ public class HelloClient {
    ```bash
    java HelloClient
    ```            
+
+
+## Introduction to CORBA
+
+**Common Object Request Broker Architecture (CORBA)** is an architecture and specification for creating, distributing, and managing distributed program objects in a network. It allows programs at different locations and developed by different vendors to communicate in a network. CORBA uses an object-oriented model, and although the details can be quite complex, the main idea is to allow invocation of methods on a remote object, similar to making method calls on local objects.
+
+---
+
+## Implementing CORBA
+
+### Prerequisites:
+
+1. Install the Java Development Kit (JDK).
+2. Install an ORB (Object Request Broker). One of the most common ORBs for Java is the Java IDL that comes with the JDK.
+
+### Steps:
+
+1. **Define the Interface in IDL (Interface Definition Language)**:
+   Create a file named `Hello.idl` with the following content:
+
+   ```idl
+   interface Hello {
+       string sayHello();
+   };
+   ```
+2. **Implement the Server**:
+   After compiling the IDL file, you'll need to implement the server. Extend the generated `HelloPOA` class and implement the `sayHello` method:
+
+   ```java
+   public class HelloImpl extends HelloPOA {
+       @Override
+       public String sayHello() {
+           return "Hello, CORBA!";
+       }
+   } 
+   ```
+3. **Create Server Main Class**:
+   After compiling the IDL file, you'll need to implement the server. Extend the generated `HelloPOA` class and implement the `sayHello` method:
+
+   ```java
+   public class HelloServer {
+    public static void main(String[] args) {
+        try {
+            ORB orb = ORB.init(args, null);
+            HelloImpl helloImpl = new HelloImpl();
+            orb.connect(helloImpl);
+            org.omg.CORBA.Object objRef = orb.resolve_initial_references("NameService");
+            NamingContext ncRef = NamingContextHelper.narrow(objRef);
+            NameComponent[] path = { new NameComponent("Hello", "") };
+            ncRef.rebind(path, helloImpl);
+            System.out.println("HelloServer ready and waiting...");
+            orb.run();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+   }
+   ```
+4. **Implement the Client:**:
+   After compiling the IDL file, you'll need to implement the server. Extend the generated `HelloPOA` class and implement the `sayHello` method:
+
+   ```java
+   public class HelloClient {
+    public static void main(String[] args) {
+        try {
+            ORB orb = ORB.init(args, null);
+            org.omg.CORBA.Object objRef = orb.resolve_initial_references("NameService");
+            NamingContextExt ncRef = NamingContextExtHelper.narrow(objRef);
+            Hello helloRef = HelloHelper.narrow(ncRef.resolve_str("Hello"));
+            System.out.println(helloRef.sayHello());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+   ```         
