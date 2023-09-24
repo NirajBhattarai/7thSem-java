@@ -176,6 +176,9 @@ public class HelloClient {
        string sayHello();
    };
    ```
+
+   compile with `idlj -fall Hello.idl`
+   add corba jar after that
 2. **Implement the Server**:
    After compiling the IDL file, you'll need to implement the server. Extend the generated `HelloPOA` class and implement the `sayHello` method:
 
